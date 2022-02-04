@@ -131,7 +131,7 @@ class Bus(object):
 
     @property
     def reference(self):
-        return ctypes.byref(self._bus)
+        return self._inst
 
 
 if __name__ == "__main__":
