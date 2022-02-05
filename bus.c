@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string.h>
 
 #include "bus.h"
 
@@ -28,17 +29,49 @@ Component *Bus_findComponentByAddr(Bus *bus, uint64_t addr) {
 
 
 int Bus_read(Bus *bus, uint64_t addr, int byte_size, void *dst) {
+    int ret;
 	Component *comp = Bus_findComponentByAddr(bus, addr);
 	if (!comp) return -1;
 	
-    if (bus->debug) fprintf(bus->debug, "Read %d byte(s) from 0x%x\n", byte_size, addr);
-	return comp->read(comp->inst, addr, byte_size, dst);
+	ret = comp->read(comp->inst, addr, byte_size, dst);
+    
+    if (bus->debug) {
+        if (ret != 0) {
+            fprintf(bus->debug, "Error occured while reading %d byte(s) from 0x%x\n", byte_size, addr);
+            return ret;
+        }
+        
+        if (byte_size <= 8 && dst) {
+            char buf[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+            memcpy(&buf, dst, (size_t)byte_size);
+            
+            fprintf(bus->debug, "Read %d byte(s) (0x%x) from 0x%x\n", byte_size, &buf, addr);
+        } else {fprintf(bus->debug, "Read %d byte(s) from 0x%x\n", byte_size, addr); }
+    }
+    
+    return ret;
 }
 
 int Bus_write(Bus *bus, uint64_t addr, int byte_size, void *src) {
+    int ret;
 	Component *comp = Bus_findComponentByAddr(bus, addr);
 	if (!comp) return -1;
 	
-    if (bus->debug) fprintf(bus->debug, "Wrote %d byte(s) to 0x%x\n", byte_size, addr);
-	return comp->write(comp->inst, addr, byte_size, src);
+	ret = comp->write(comp->inst, addr, byte_size, src);
+    
+    if (bus->debug) {
+        if (ret != 0) {
+            fprintf(bus->debug, "Error occured while writing %d byte(s) to 0x%x\n", byte_size, addr);
+            return ret;
+        }
+        
+        if (byte_size <= 8 && src) {
+            char buf[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+            memcpy(&buf, src, (size_t)byte_size);
+            
+            fprintf(bus->debug, "Wrote %d byte(s) (0x%x) from 0x%x\n", byte_size, &buf, addr);
+        } else {fprintf(bus->debug, "Wrote %d byte(s) from 0x%x\n", byte_size, addr); }
+    }
+    
+    return ret;
 }
