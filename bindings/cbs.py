@@ -1,4 +1,5 @@
 import sys
+import os
 import ctypes
 import _ctypes
 
@@ -59,9 +60,9 @@ _Bus_p = ctypes.POINTER(_Bus)
 
 if sys.platform == "win32":
     _fdopen = ctypes.cdll.msvcrt._fdopen
-    _cbs = ctypes.CDLL("./cbs.dll")
+    _cbs = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "cbs.dll"))
 else:
-    _cbs = ctypes.CDLL("./cbs.so")
+    _cbs = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "cbs.so"))
     try: _fdopen = ctypes.cdll.libc.fdopen
     except: _fdopen = ctypes.CDLL("libc.so").fdopen
 _fdopen.restype = _FILE_p
@@ -134,16 +135,3 @@ class Bus(object):
     @property
     def reference(self):
         return self._inst
-
-
-if __name__ == "__main__":
-    class Mon(Component):
-        def is_in_addr_space(*args): return 1
-        def read(*args): print("py_read"); return 0
-        def write(*args): print("py_write"); return 0
-
-    b = Bus()
-    m = Mon(True)
-
-    b.attach_component(m)
-    b.read(1, 2)
