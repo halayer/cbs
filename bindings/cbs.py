@@ -57,14 +57,16 @@ class _Bus(ctypes.Structure):
 _Bus_p = ctypes.POINTER(_Bus)
     
 
-if sys.platform == "win32": _fdopen = ctypes.cdll.msvcrt._fdopen
+if sys.platform == "win32":
+    _fdopen = ctypes.cdll.msvcrt._fdopen
+    _cbs = ctypes.CDLL("./cbs.dll")
 else:
+    _cbs = ctypes.CDLL("./cbs.so")
     try: _fdopen = ctypes.cdll.libc.fdopen
     except: _fdopen = ctypes.CDLL("libc.so").fdopen
 _fdopen.restype = _FILE_p
 
 
-_cbs = ctypes.CDLL("./cbs.dll")
 unload = lambda: _ctypes.FreeLibrary(_cbs._handle)
 
 _cbs.Bus_attachComponent.argtypes = [_Bus_p, _Component_p]
