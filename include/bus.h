@@ -38,7 +38,7 @@ typedef struct Bus {
 
 
 void Bus_attachComponent(Bus *bus, Component *comp);        // Attaches a component to the bus.
-Component *Bus_findComponentByAddr(Bus *bus, uint64_t addr);    // Finds a component index by the
+Component *Bus_findComponentByAddr(Bus *bus, uint64_t addr);    // Finds a component index by
     // the component's address space. Overlapping address spaces cause the component which
     // was registered first for this address space to be returned. (Might change in the future)
 
