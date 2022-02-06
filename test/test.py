@@ -30,5 +30,6 @@ comp = Test(True)
 
 bus.attach_component(comp)
 bus.read(1, 2)
+bus.detach_component(comp)
 
 cbs.unload()
