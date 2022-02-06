@@ -5,7 +5,7 @@ gcc bus.c --shared -o bindings/cbs.dll -Iinclude
 
 cd bindings/ada
 gcc -c components.ads
-gcc -c buses.ads
+gcc -c buses.adb
 cd ../..
 
 exit /B
