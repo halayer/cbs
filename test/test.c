@@ -14,4 +14,5 @@ int main() {
     
     Bus_attachComponent(&bus, &comp);
     Bus_read(&bus, 1, 2, &buf);
+    Bus_detachComponent(&bus, &comp);
 }
