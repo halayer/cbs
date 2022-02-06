@@ -73,6 +73,9 @@ unload = lambda: _ctypes.FreeLibrary(_cbs._handle)
 _cbs.Bus_attachComponent.argtypes = [_Bus_p, _Component_p]
 _cbs.Bus_attachComponent.restype = None
 
+_cbs.Bus_detachComponent.argtypes = [_Bus_p, _Component_p]
+_cbs.Bus_detachComponent.restype = ctypes.c_int
+
 _cbs.Bus_findComponentByAddr.argtypes = [_Bus_p, ctypes.c_uint64]
 _cbs.Bus_findComponentByAddr.restype = _Component_p
 
@@ -100,6 +103,9 @@ class Bus(object):
     def __init__(self):
         self._struct = _Bus()
         self._inst = ctypes.byref(self._struct)
+    
+    def __repr__(self):
+        return "<Component {}>".format(self._inst)
 
     @staticmethod
     def from_reference(ref):
@@ -111,6 +117,14 @@ class Bus(object):
     def attach_component(self, comp):
         if isinstance(comp, Component): comp = comp._inst
         _cbs.Bus_attachComponent(self._inst, comp)
+    
+    def detach_component(self, comp):
+        arg = comp
+        if isinstance(arg, Component): arg = comp._inst
+        ret = _cbs.Bus_detachComponent(self._inst, arg)
+        
+        if ret != 0:
+            raise IndexError("Component {} not found.".format(comp))
 
     def find_component_by_addr(self, addr):
         return _cbs.Bus_findComponentByAddr(self._inst, addr)
