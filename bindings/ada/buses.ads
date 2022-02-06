@@ -18,7 +18,7 @@ package Buses is
         with Import => True, Convention => C, External_Name => "Bus_attachComponent";
     -- Attaches a component to the bus.
     
-    procedure detach_component(self: in out Bus; comp: access Component)
+    function detach_component(self: in out Bus; comp: access Component) return int
         with Import => True, Convention => C, External_Name => "Bus_detachComponent";
     -- Detaches a component from the bus.
     
