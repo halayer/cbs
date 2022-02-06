@@ -3,6 +3,7 @@ with Interfaces.C; use Interfaces.C;
 with Components; use Components;
 with Buses; use Buses;
 with Test_Component; use Test_Component;
+with Ada.Text_IO;
 
 procedure test is
     b : Bus;
@@ -13,4 +14,5 @@ begin
     
     b.attach_component(c'Access);
     e := b.read(1, 2, System.Null_Address);
+    e := b.detach_component(c'Access);
 end test;
