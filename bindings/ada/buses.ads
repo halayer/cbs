@@ -18,6 +18,10 @@ package Buses is
         with Import => True, Convention => C, External_Name => "Bus_attachComponent";
     -- Attaches a component to the bus.
     
+    procedure detach_component(self: in out Bus; comp: access Component)
+        with Import => True, Convention => C, External_Name => "Bus_detachComponent";
+    -- Detaches a component from the bus.
+    
     function find_component_by_addr(self: in out Bus; addr: Address) return access Component
         with Import => True, Convention => C, External_Name => "Bus_findComponentByAddr";
     -- Finds a component index by the component's address space. Overlapping address spaces
