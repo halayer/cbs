@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "bus.h"
+#include "cbs/bus.h"
 
 void Bus_attachComponent(Bus *bus, Component *comp) {
     if (bus->comp_amount == 0) {
@@ -21,7 +21,6 @@ int Bus_detachComponent(Bus *bus, Component *comp) {
     
     if (comp == bus->first) {
         bus->first = comp->next;
-        bus->comp_amount--;
     } else {
         Component *search = bus->first;
         
@@ -35,11 +34,11 @@ int Bus_detachComponent(Bus *bus, Component *comp) {
         }
         
         search->next = comp->next;
-        bus->comp_amount--;
     }
     
     if (bus->debug) fprintf(bus->debug, "Component 0x%x detached.\n", comp);
     
+    bus->comp_amount--;
     return 0;
     
     error:
@@ -74,11 +73,11 @@ int Bus_read(Bus *bus, uint64_t addr, int byte_size, void *dst) {
             return ret;
         }
         
-        if (byte_size <= 8 && dst) {
-            uint64_t buf = 0;
+        if (byte_size == 4 && dst) {
+            uint32_t buf = 0;
             memcpy(&buf, dst, (size_t)byte_size);
             
-            fprintf(bus->debug, "Read %d byte(s) (0x%llx) from 0x%x\n", byte_size, buf, addr);
+            fprintf(bus->debug, "Read %d byte(s) (0x%x) from 0x%x\n", byte_size, buf, addr);
         } else {fprintf(bus->debug, "Read %d byte(s) from 0x%x\n", byte_size, addr); }
     }
     
@@ -98,11 +97,11 @@ int Bus_write(Bus *bus, uint64_t addr, int byte_size, void *src) {
             return ret;
         }
         
-        if (byte_size <= 8 && src) {
-            uint64_t buf = 0;
+        if (byte_size == 4 && src) {
+            uint32_t buf = 0;
             memcpy(&buf, src, (size_t)byte_size);
             
-            fprintf(bus->debug, "Wrote %d byte(s) (0x%llx) from 0x%x\n", byte_size, buf, addr);
+            fprintf(bus->debug, "Wrote %d byte(s) (0x%x) from 0x%x\n", byte_size, buf, addr);
         } else {fprintf(bus->debug, "Wrote %d byte(s) from 0x%x\n", byte_size, addr); }
     }
     
